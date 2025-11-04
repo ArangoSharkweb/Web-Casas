@@ -1,6 +1,13 @@
 <script setup>
 import { ref } from 'vue'
-const filtrosPred = {
+const casas  = defineProps({
+    property:{
+    type:Object,
+    require:true
+    }
+}
+)
+const filtrosPred ={
     precioMax: 2000000,
     Municipio:'',
     baños:0,
@@ -8,6 +15,13 @@ const filtrosPred = {
 }
 const filtros = ref({...filtrosPred})
 const Municipio = ['Plaza de la Revolucion','Regla','Playa','La lisa','Cerro']
+const resetearFiltros = ()=>{
+
+}
+const buscarCasas =()=> {
+   let arrayCasas = casas.property
+}
+
 </script>
 
 <template>
@@ -61,7 +75,7 @@ const Municipio = ['Plaza de la Revolucion','Regla','Playa','La lisa','Cerro']
     </div>
     
     <div class="filtro-grupo">
-        <button class="btn btn-primary w-100 mt-2">
+        <button class="btn btn-primary w-100 mt-2" >
             Buscar
         </button>
     </div>

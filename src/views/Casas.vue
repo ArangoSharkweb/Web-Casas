@@ -1,15 +1,22 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 import FiltroCasa from '@/components/FiltroCasa.vue'
 import PropertyCardHomevue from '@/components/PropertyCardHomevue.vue'
-
+import PropertyGrid from '@/components/PropertyGrid.vue'
+//Estados de las variables
+const filtrosActivos = reactive({
+  precioMax: 2000000,
+    Municipio:'Todos Los Municipios',
+    baños:2,
+    cuartos:3,
+})
 const casas = ref([
   {
     id: 1,
     title: 'Casa en La Habana Vieja',
     description: 'Hermosa casa colonial con vista al mar.',
-    precio: '500,000',
+    precio: 500000,
     image: '/src/assets//images/HabanaVieja.jpg', 
     ubicacion: 'La Habana Vieja',
     habitaciones: 3,
@@ -30,6 +37,41 @@ const casas = ref([
     moneda: 'CUP'
   }
 ])
+//funciones
+const filtrarPropiedades = computed( ()=>{
+  if(casas.value.length === 0){
+    return []
+  }else{
+     let casasEncontradas = casas.value.filter(casaFiltrada =>{
+      // filtro de precioMax
+      if(casaFiltrada.precio  > filtrosActivos.precioMax){
+        return false;
+      }
+      //filtro de cuartos
+      if(casaFiltrada.habitaciones !== filtrosActivos.cuartos){
+        return false;
+      }
+      if(casaFiltrada.banos !== filtrosActivos.baños){
+        return false;
+      }
+      if(casaFiltrada.ubicacion !== filtrosActivos.Municipio || filtrosActivos.Municipio !== 'Todos Los Municipios'){
+        return false;
+      }
+    return true;
+    })
+    
+    return casasEncontradas;
+  }
+}
+  
+)
+const probarFiltro = ()=>{// funcion para probar filtro
+  const aplicado = filtrarPropiedades.value;
+  console.log(filtrarPropiedades.value.banos)
+}
+const manejarNuevosFiltros = (nuevoFiltro)=>{
+  Object.assign(filtrosActivos,nuevoFiltro);
+}
  
 </script>
 <template>
@@ -37,7 +79,7 @@ const casas = ref([
     <div class="container mt-4"> 
       <div class="row">
         <aside class="col-12 col-lg-4 mb-4"> 
-          <FiltroCasa></FiltroCasa>
+          <FiltroCasa :filter="filtrosActivos" @manejoFiltro="manejarNuevosFiltros" ></FiltroCasa>
         </aside>
 
         <div class="col-12 col-lg-8"> 
@@ -52,7 +94,9 @@ const casas = ref([
               v-for="property in casas" 
               :key="property.id" 
               class="col-12 mb-4" >
-              <PropertyCardHomevue :property="property" />
+              <PropertyCardHomevue :casas="filtrarPropiedades" />
+              <PropertyGrid></PropertyGrid>
+              <button v-on:click="probarFiltro">explota</button>
             </div>
           </div>
         </div>
@@ -93,4 +137,5 @@ template{
 .container {
   max-width: 1200px; 
 }
+
 </style>
