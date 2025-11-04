@@ -1,25 +1,31 @@
 <script setup>
-import { ref } from 'vue'
-const casas  = defineProps({
-    property:{
-    type:Object,
-    require:true
-    }
-}
-)
-const filtrosPred ={
-    precioMax: 2000000,
-    Municipio:'',
-    baños:0,
-    cuartos:0,
-}
-const filtros = ref({...filtrosPred})
-const Municipio = ['Plaza de la Revolucion','Regla','Playa','La lisa','Cerro']
-const resetearFiltros = ()=>{
+import { ref, watch } from 'vue'
 
-}
-const buscarCasas =()=> {
-   let arrayCasas = casas.property
+const props = defineProps({
+  filter: {
+    type: Object,
+    required: true
+  }
+})
+
+const emits = defineEmits(['manejoFiltro'])
+const filtrosLocales = ref({...props.filter
+  
+})
+watch(() => props.filter, (newFilter) => {
+  filtrosLocales.value = { ...newFilter }
+}, { deep: true })
+watch(filtrosLocales,(nuevosFiltros) =>{
+    emits('manejoFiltro',{...nuevosFiltros})
+}, { deep: true })
+const Municipio = ['Plaza de la Revolucion','Regla','Playa','La lisa','Cerro','Miramar']
+const resetearFiltros = () => {
+  filtrosLocales.value = {
+    precioMax: 2000000,
+    Municipio: 'Todos Los Municipios',
+    baños: 0,
+    cuartos: 0,
+  }
 }
 
 </script>
@@ -34,7 +40,7 @@ const buscarCasas =()=> {
         <label class="filtro-label" for="Municipio">Municipio</label>
         <select class="filter-select input-field" 
                 id="Municipio"
-                v-model="filtros.Municipio"> <option value="">Todos los Municipios</option> <option v-for="mun in Municipio" :key="mun" :value="mun">{{mun}}</option>
+                v-model="filtrosLocales.Municipio"> <option value="Todos Los Municipios">Todos los Municipios</option> <option v-for="mun in Municipio" :key="mun" :value="mun">{{mun}}</option>
         </select>
     </div>
     
@@ -44,7 +50,7 @@ const buscarCasas =()=> {
                type="number" 
                id="baños" 
                min="0" 
-               v-model.number="filtros.baños"> </div>
+               v-model.number="filtrosLocales.baños"> </div>
 
     <div class="filtro-grupo">
         <label class="filtro-label" for="cuartos">Número de Cuartos</label>
@@ -52,18 +58,18 @@ const buscarCasas =()=> {
                type="number" 
                id="cuartos" 
                min="0" 
-               v-model.number="filtros.cuartos"> </div>
+               v-model.number="filtrosLocales.cuartos"> </div>
 
 
     <div class="filtro-grupo">
         <label class="filtro-label" for="precio">Precio Máximo</label>
-        <input :max="filtrosPred.precioMax"
+        <input :max="filtrosLocales.precioMax"
                     min="100000"
                     step="10000"
                     style="width: 100%"
                     type="range"
                     id="precio"
-                    v-model.number="filtros.precioMax"> </input>
+                    v-model.number="filtrosLocales.precioMax"> </input>
         <div
             style="
                 text-align: right;
@@ -71,12 +77,12 @@ const buscarCasas =()=> {
                 margin-top: 0.25rem;
             "
         >
-            Máx: ${{ filtros.precioMax.toLocaleString('es-ES') }} </div>
+            Máx: ${{ filtrosLocales.precioMax.toLocaleString('es-ES') }} </div>
     </div>
     
     <div class="filtro-grupo">
-        <button class="btn btn-primary w-100 mt-2" >
-            Buscar
+        <button class="btn btn-primary w-100 mt-2" v-on:click="resetearFiltros">
+            limpiarFiltros
         </button>
     </div>
 </div>

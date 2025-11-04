@@ -2,14 +2,13 @@
 import { computed, reactive, ref } from 'vue'
 
 import FiltroCasa from '@/components/FiltroCasa.vue'
-import PropertyCardHomevue from '@/components/PropertyCardHomevue.vue'
 import PropertyGrid from '@/components/PropertyGrid.vue'
 //Estados de las variables
 const filtrosActivos = reactive({
   precioMax: 2000000,
     Municipio:'Todos Los Municipios',
-    baños:2,
-    cuartos:3,
+    baños:0,
+    cuartos:0,
 })
 const casas = ref([
   {
@@ -28,7 +27,7 @@ const casas = ref([
     id: 2,
     title: 'Apartamento en Miramar',
     description: 'Apartamento moderno cerca de la playa.',
-    precio: '300,000',
+    precio: 300000,
     image: '/src/assets/images/Miramar.jpg',
     ubicacion: 'Miramar',
     habitaciones: 2,
@@ -42,32 +41,32 @@ const filtrarPropiedades = computed( ()=>{
   if(casas.value.length === 0){
     return []
   }else{
-     let casasEncontradas = casas.value.filter(casaFiltrada =>{
+     return casas.value.filter(casaFiltrada =>{
       // filtro de precioMax
       if(casaFiltrada.precio  > filtrosActivos.precioMax){
         return false;
       }
       //filtro de cuartos
-      if(casaFiltrada.habitaciones !== filtrosActivos.cuartos){
+      if( casaFiltrada.habitaciones !== filtrosActivos.cuartos && filtrosActivos.cuartos !== 0){
         return false;
       }
-      if(casaFiltrada.banos !== filtrosActivos.baños){
+      if(casaFiltrada.banos !== filtrosActivos.baños && filtrosActivos.baños !== 0){
         return false;
       }
-      if(casaFiltrada.ubicacion !== filtrosActivos.Municipio || filtrosActivos.Municipio !== 'Todos Los Municipios'){
+      if(casaFiltrada.ubicacion !== filtrosActivos.Municipio && filtrosActivos.Municipio !== 'Todos Los Municipios'){
         return false;
       }
     return true;
     })
     
-    return casasEncontradas;
+    
   }
 }
   
 )
 const probarFiltro = ()=>{// funcion para probar filtro
   const aplicado = filtrarPropiedades.value;
-  console.log(filtrarPropiedades.value.banos)
+  console.log(aplicado)
 }
 const manejarNuevosFiltros = (nuevoFiltro)=>{
   Object.assign(filtrosActivos,nuevoFiltro);
@@ -85,18 +84,14 @@ const manejarNuevosFiltros = (nuevoFiltro)=>{
         <div class="col-12 col-lg-8"> 
           <div class="row mb-4">
             <div class="col-12">
-              <h1 class="h2 fw-bold text-dark mb-1">Propiedades Disponibles</h1>
+              
             </div>
           </div>
           
           <div class="row">
-            <div 
-              v-for="property in casas" 
-              :key="property.id" 
-              class="col-12 mb-4" >
-              <PropertyCardHomevue :casas="filtrarPropiedades" />
-              <PropertyGrid></PropertyGrid>
-              <button v-on:click="probarFiltro">explota</button>
+            <div> 
+              <PropertyGrid :properties="filtrarPropiedades"></PropertyGrid>
+              
             </div>
           </div>
         </div>

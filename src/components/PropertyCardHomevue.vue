@@ -1,14 +1,14 @@
 <script setup>
 
 import { RouterLink } from 'vue-router';
-
 defineProps({
-  property: {
+property: {
     type: Object,
     required: true
   }
 })
-const routerDetallesPath = '/'//por ahora es este xq no lo tengo hecho
+
+
 
 // Función para formatear el precio y añadir 'CUP' o similar
 const formatPrice = (price, currency) => {
@@ -16,113 +16,124 @@ const formatPrice = (price, currency) => {
 }
 </script>
 <template>
-  <RouterLink :to="routerDetallesPath" class="card-link-wrapper">
-    <div class="card property-card-horizontal border-0 shadow-sm">
-      <div class="row g-0">
+  
+    <div class="card property-card-vertical border-0 shadow-sm h-100">
+      
         
-        <div class="col-4 col-md-5 property-image-container">
+        <div class="property-image-container">
         <img :src="`${property.image}`">
         </div>
         
-        <div class="col-8 col-md-7">
-          <div class="card-body d-flex flex-column h-100 p-3 p-md-4">
-
+        <div class="card-body d-flex flex-column p-3">
             <div class="d-flex justify-content-between align-items-start mb-2">
-              <h5 class="card-title fw-bold text-dark mb-0 text-truncate">{{ property.title }}</h5>
-              <span class="fw-bold text-primary fs-5 ms-3">
+              <h5 class="card-title fw-bold text-dark mb-0 ">{{property.title }}</h5>
+              <span class="fw-bold text-primary fs-6 ms-2">
                 {{ formatPrice(property.precio, property.moneda) }}
               </span>
             </div>
             
-            <p class="card-text text-muted small mb-3">
+            <p class="card-text text-muted small mb-2">
               <i class="fas fa-map-marker-alt me-1"></i> 
-              {{ property.ubicacion }}
+              {{property.ubicacion }}
             </p>
 
-            <p class="card-text text-muted property-description flex-grow-1">
-              {{ property.description }}
+            <p class="card-text text-mutedproperty-description flex-grow-1">
+              {{property.description }}
             </p>
-
-            <div class="d-flex justify-content-start text-muted small mt-auto pt-2 features-group">
-              <span class="d-flex align-items-center me-3">
+            <div class="property-freatures"></div>
+            <div class="d-flex justify-content-start text-muted small ">
+              <span class="d-flex align-items-center ">
                 <i class="fas fa-bed me-1 text-primary"></i> 
-                {{ property.habitaciones }} hab.
+                {{property.habitaciones }} hab.
               </span>
-              <span class="d-flex align-items-center me-3">
+              <span class="d-flex align-items-center">
                 <i class="fas fa-bath me-1 text-primary"></i> 
-                {{ property.banos }} baños
+                {{property.banos }} baños
               </span>
               <span class="d-flex align-items-center">
                 <i class="fas fa-ruler-combined me-1 text-primary"></i> 
-                {{ property.area }}
+                {{property.area }}
               </span>
             </div>
 
           </div>
         </div>
-      </div>
-    </div>
-  </RouterLink>
+   
+
+  
 </template>
 <style scoped>
 /* Contenedor del RouterLink para que toda la tarjeta sea clickable  pd Ahora no funciona*/
+
 .card-link-wrapper {
-    text-decoration: none;
-    display: block; /* Asegura que ocupe todo el ancho */
-    transition: all 0.3s ease;
+  text-decoration: none;
+  display: block;
+  height: 100%;
 }
 
-.property-card-horizontal {
-  border: 1px solid var(--border-light, #e9ecef); 
-  border-radius: 0.75rem; 
-  width: 100%;
-  overflow: hidden; /* Importante para el radio de borde */
-}
-
-.card-link-wrapper:hover .property-card-horizontal {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; /* Sombra más notable en hover */
-}
-
-/* Imagen - Asegura que ocupe la altura completa de la tarjeta */
-.property-image-container {
-    height: 100%;
-}
-.card-img-custom {
-  height: 100%; 
-  width: 100%;
-  object-fit: cover;
-  min-height: 150px; 
-}
-
-
-.property-description {
-
-  -webkit-box-orient: vertical;
+.property-card-vertical {
+  border-radius: 12px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.5;
-  min-height: 3rem; /* Altura para 2 líneas */
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;}
+  .card-link-wrapper:hover .property-card-vertical {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+.property-image-container {
+  height: 200px;
+  overflow: hidden;
+}
+
+.property-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-title {
-  font-size: 1.25rem; 
-  max-width: 70%; /* Limita el ancho del título si el precio es largo */
+  font-size: 1.1rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.property-description {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.property-features {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f3f4;
 }
 
-.features-group {
-    gap: 1.5rem; /* Espacio entre las características (cama, baño, área) */
-}
+/* 📱 Responsive para tarjetas */
+@media (max-width: 768px) {
+  .property-image-container {
+    height: 180px;
+  }
 
-/* por si se apila la imagen*/
-@media (max-width: 767.98px) {
-    .card-img-custom {
-        border-top-left-radius: 0.75rem !important;
-        border-top-right-radius: 0.75rem !important;
-        border-bottom-left-radius: 0 !important;
-    }
-    .property-card-horizontal {
-      flex-direction: column; /* Forzar apilamiento vertical */
-    }
+.card-title {
+    font-size: 1rem;
+  }
+  
+  .property-description {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
 }
 </style>
